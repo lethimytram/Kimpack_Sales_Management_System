@@ -1,0 +1,27 @@
+@page "{maD:int}" 
+@model KIMPACK.Pages.SalesInvoices.DeleteModel
+@{
+    ViewData["Title"] = "Xóa đơn đặt hàng";
+}
+
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <h3>Xóa đơn đặt hàng</h3> <!-- Thay "Cung cấp" thành "Đơn đặt hàng" -->
+        </div>
+        <div class="card-body">
+            <p>Bạn có chắc chắn muốn xóa đơn đặt hàng với mã <strong>@Model.MaD</strong> không?</p> <!-- Hiển thị MaD -->
+            <p>Nếu bạn xóa, mọi dữ liệu liên quan đến đơn đặt hàng này sẽ không thể khôi phục.</p> <!-- Cảnh báo khi xóa -->
+        </div>
+        <div class="card-footer text-center">
+            <form method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Xóa
+                </button>
+                <a href="/MaterialsInvoices/Index" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Quay lại
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

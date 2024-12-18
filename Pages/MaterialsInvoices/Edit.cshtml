@@ -1,0 +1,74 @@
+@page "{maCC:int}"
+@model KIMPACK.Pages.MaterialsInvoices.EditModel
+
+@{
+    ViewData["Title"] = "Sửa cung cấp";
+}
+
+<div class="container mt-5">
+    <div class="card border-primary">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>Sửa hoá đơn mua nguyên vật liệu</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <!-- Mã cung cấp -->
+                <div class="form-group">
+                    <label for="MaCC">Mã cung cấp</label>
+                    <input type="text" class="form-control" id="MaCC" name="MaCC" value="@Model.MaCC" readonly />
+                </div>
+
+                <!-- Ngày cung cấp -->
+                <div class="form-group">
+                    <label for="NgayCungCap">Ngày cung cấp</label>
+                    <input type="date" class="form-control" id="NgayCungCap" name="NgayCungCap" value="@Model.NgayCungCap.ToString("yyyy-MM-dd")" required />
+                </div>
+
+                <!-- Hình thức thanh toán -->
+                <div class="form-group">
+                    <label for="HinhThucThanhToan">Hình thức thanh toán</label>
+                    <select class="form-control" id="HinhThucThanhToan" name="HinhThucThanhToan" required>
+                        <option value="1" selected="@(Model.HinhThucThanhToan == "1" ? "selected" : null)">Tiền mặt</option>
+                        <option value="0" selected="@(Model.HinhThucThanhToan == "0" ? "selected" : null)">Chuyển khoản</option>
+                    </select>
+                </div>
+
+                <!-- Mức thuế suất -->
+                <div class="form-group">
+                    <label for="MucThueSuat">Mức thuế suất</label>
+                    <input type="number" class="form-control" id="MucThueSuat" name="MucThueSuat" step="0.001" min="0" max="1" value="@Model.MucThueSuat" required />
+                </div>
+
+                <!-- Mã nhà cung cấp -->
+                <div class="form-group">
+                    <label for="MaNCC">Mã nhà cung cấp</label>
+                    <input type="number" class="form-control" id="MaNCC" name="MaNCC" value="@Model.MaNCC" required />
+                </div>
+
+                <!-- Chi tiết hóa đơn -->
+                <hr />
+                <h4>Chi tiết hóa đơn</h4>
+                <div class="form-group">
+                    <label for="MaNVL">Mã nguyên vật liệu</label>
+                    <!-- Sử dụng readonly để không thể thay đổi Mã nguyên vật liệu -->
+                    <input type="text" class="form-control" id="MaNVL" name="MaNVL" value="@Model.MaNVL" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="SoLuong">Số lượng</label>
+                    <input type="number" class="form-control" id="SoLuong" name="SoLuong" value="@Model.SoLuong" step="0.001" min="0" required />
+                </div>
+
+                <!-- Thông báo lỗi nếu có -->
+                @if (Model.Message != null)
+                {
+                    <div class="alert alert-danger mt-3">@Model.Message</div>
+                }
+
+                <!-- Các nút điều hướng -->
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <a href="/Materials/Index" class="btn btn-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>

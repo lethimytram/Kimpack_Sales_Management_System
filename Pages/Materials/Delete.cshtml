@@ -1,0 +1,27 @@
+@page "{MaNVL:int}"  
+@model KIMPACK.Pages.Materials.DeleteModel
+@{
+    ViewData["Title"] = "Xóa nguyên vật liệu";  <!-- Change title to "Delete Material" -->
+}
+
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <h3>Xóa nguyên vật liệu</h3>  <!-- Change to "Delete Material" -->
+        </div>
+        <div class="card-body">
+            <p>Bạn có chắc chắn muốn xóa nguyên vật liệu với mã <strong>@Model.MaNVL</strong> không?</p>  <!-- Change to material -->
+            <p>Nếu bạn xóa, mọi dữ liệu liên quan đến nguyên vật liệu này sẽ không thể khôi phục.</p>  <!-- Change to material -->
+        </div>
+        <div class="card-footer text-center">
+            <form method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Xóa  <!-- Change to "Delete" -->
+                </button>
+                <a href="/Materials/Index" class="btn btn-secondary">  <!-- Change redirect to Materials/Index -->
+                    <i class="fa fa-arrow-left"></i> Quay lại  <!-- Change to "Back" -->
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

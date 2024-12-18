@@ -1,0 +1,49 @@
+@page
+@model KIMPACK.Pages.SalesInvoices.Index
+@{
+    ViewData["Title"] = "Danh sách đơn hàng";
+}
+
+<h2 class="text-center mb-3">Danh sách đơn hàng</h2>
+
+<a class="btn btn-primary" asp-page="/SalesInvoices/Create">Thêm đơn hàng</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> KHHD </th>
+            <th> Ngày Đặt </th>
+            <th> HTTT </th>
+            <th> Tiền SP </th>
+            <th> Mức Thuế </th>
+            <th> Tiền Thuế </th>
+            <th> Thanh Toán </th>
+            <th> Tên KH </th>
+            <th> Địa Chỉ KH </th>
+            <th> Hành động </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.OrderList)
+        {
+            <tr>
+                <td>@order.MaD</td>
+                <td>@order.KyHieuHD</td>
+                <td>@order.NgayDat.ToString("dd/MM/yyyy")</td>
+                <td>@order.HinhThucThanhToan</td>
+                <td>@order.TongTienSP?.ToString("N3")</td>
+                <td>@order.MucThueSuatGTGT</td>
+                <td>@order.TienThueGTGT?.ToString("N3")</td>
+                <td>@order.TongTienThanhToan?.ToString("N3")</td>
+                <td>@order.TenKH</td>
+                <td>@order.DiaChiKH</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-primary btn-sm" asp-page="/SalesInvoices/Edit" asp-route-MaD="@order.MaD">Chi tiết</a> |
+                    <a class="btn btn-primary btn-sm" asp-page="/SalesInvoices/Edit" asp-route-MaD="@order.MaD">Sửa</a> |
+                    <a class="btn btn-danger btn-sm" asp-page="/SalesInvoices/Delete" asp-route-MaD="@order.MaD">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,38 @@
+@page
+@model KIMPACK.Pages.Suppliers.Index
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center mb-3">Danh sách nhà cung cấp</h2>
+
+<a class="btn btn-primary" asp-page="/Suppliers/Create">Thêm nhà cung cấp</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> Tên </th>
+            <th> Địa chỉ </th>
+            <th> Số điện thoại </th>
+            <th> Số tài khoản </th>
+            <th> Hành động </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var supplier in Model.SuppliersList)
+        {
+            <tr>
+                <td>@supplier.MaNCC</td>
+                <td>@supplier.TenNCC</td>
+                <td>@supplier.DiaChiNCC</td>
+                <td>@supplier.SoDienThoaiNCC</td>
+                <td>@supplier.SoTaiKhoanNCC</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-primary btn-sm" asp-page="/Suppliers/Edit" asp-route-MaNCC="@supplier.MaNCC">Sửa</a> |
+                    <a class="btn btn-primary btn-sm" asp-page="/Suppliers/Delete" asp-route-MaNCC="@supplier.MaNCC">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

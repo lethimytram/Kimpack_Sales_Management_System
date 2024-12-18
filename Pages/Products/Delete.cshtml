@@ -1,0 +1,27 @@
+@page "{MaSP:int}"  
+@model KIMPACK.Pages.Products.DeleteModel
+@{
+    ViewData["Title"] = "Xóa sản phẩm";  <!-- Change title to "Delete Product" -->
+}
+
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <h3>Xóa sản phẩm</h3>  <!-- Change to "Delete Product" -->
+        </div>
+        <div class="card-body">
+            <p>Bạn có chắc chắn muốn xóa sản phẩm với mã <strong>@Model.MaSP</strong> không?</p>  <!-- Change to product -->
+            <p>Nếu bạn xóa, mọi dữ liệu liên quan đến sản phẩm này sẽ không thể khôi phục.</p>  <!-- Change to product -->
+        </div>
+        <div class="card-footer text-center">
+            <form method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Xóa  <!-- Change to "Delete" -->
+                </button>
+                <a href="/Customers/Index" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Quay lại  <!-- Change to "Back" -->
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

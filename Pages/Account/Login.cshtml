@@ -1,0 +1,51 @@
+@page
+@using Microsoft.AspNetCore.Identity
+@using KIMPACK.Models  
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@model KIMPACK.Pages.Account.LoginModel
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <h3>Hệ thống quản lý KIMPACK</h3>
+}
+else
+{
+    <h2>@ViewData["Title"]</h2>
+
+    <form method="post">
+        <!-- Đoạn nhập tên người dùng -->
+        <div class="form-group">
+            <label asp-for="Model.Username" class="control-label">Email</label>
+            <input asp-for="Model.Username" class="form-control" />
+            <span asp-validation-for="Model.Username" class="text-danger"></span>
+        </div>
+
+        <!-- Đoạn nhập mật khẩu -->
+        <div class="form-group">
+            <label asp-for="Model.Password" class="control-label">Mật khẩu</label>
+            <input asp-for="Model.Password" type="password" class="form-control" />
+            <span asp-validation-for="Model.Password" class="text-danger"></span>
+        </div>
+
+        <!-- Tùy chọn nhớ tôi -->
+        <div class="form-group form-check">
+            <input asp-for="Model.RememberMe" type="checkbox" class="form-check-input" />
+            <label asp-for="Model.RememberMe" class="form-check-label">Nhớ tài khoản</label>
+        </div>
+
+        <!-- Nút đăng nhập -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+        </div>
+
+        <!-- Link đăng ký (nếu chưa có tài khoản) -->
+        <div class="form-group">
+            <p>Nhân viên mới, chưa có tài khoản: <nav><a href="/Account/Register">Đăng ký tài khoản</a>.</p>
+        </div>
+    </form>
+}

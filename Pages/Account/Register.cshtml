@@ -1,0 +1,51 @@
+@page
+@model CustomIdentity.Pages.Account.RegisterModel
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post">
+    <!-- Đoạn nhập tên người dùng -->
+    <div class="form-group">
+        <label asp-for="Model.Name" class="control-label">Họ và tên</label>
+        <input asp-for="Model.Name" class="form-control" />
+        <span asp-validation-for="Model.Name" class="text-danger"></span>
+    </div>
+
+    <!-- Đoạn nhập email -->
+    <div class="form-group">
+        <label asp-for="Model.Email" class="control-label"></label>
+        <input asp-for="Model.Email" class="form-control" />
+        <span asp-validation-for="Model.Email" class="text-danger"></span>
+    </div>
+
+    <!-- Đoạn nhập mật khẩu -->
+    <div class="form-group">
+        <label asp-for="Model.Password" class="control-label">Mật khẩu</label>
+        <input asp-for="Model.Password" type="password" class="form-control" />
+        <span asp-validation-for="Model.Password" class="text-danger"></span>
+    </div>
+
+    <!-- Đoạn nhập lại mật khẩu -->
+    <div class="form-group">
+        <label asp-for="Model.ConfirmPassword" class="control-label">Nhập lại mật khẩu</label>
+        <input asp-for="Model.ConfirmPassword" type="password" class="form-control" />
+        <span asp-validation-for="Model.ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <!-- Đoạn nhập địa chỉ -->
+    <div class="form-group">
+        <label asp-for="Model.Address" class="control-label">Địa chỉ</label>
+        <textarea asp-for="Model.Address" class="form-control"></textarea>
+        <span asp-validation-for="Model.Address" class="text-danger"></span>
+    </div>
+
+    <!-- Nút đăng ký -->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Đăng ký</button>
+    </div>
+
+    <!-- Link đăng nhập (nếu đã có tài khoản) -->
+    <div class="form-group">
+        <p>Đã có tài khoản?<a href="/Account/Login">Đăng nhập tại đây</p></p></a>.</p>
+    </div>
+</form>

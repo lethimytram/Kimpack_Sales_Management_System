@@ -1,0 +1,88 @@
+@page
+@model KIMPACK.Pages.MaterialsInvoices.CreateModel
+@{
+    ViewData["Title"] = "Thêm hoá đơn mua nguyên vật liệu";
+}
+
+<h2>Thêm hoá đơn mua nguyên vật liệu</h2>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-danger">
+        @Model.Message
+    </div>
+}
+
+<form method="post">
+    <!-- Thông tin đơn hàng chính -->
+    <div class="form-group">
+        <label for="NgayCungCap">Ngày Cung Cấp</label>
+        <input type="date" class="form-control" id="NgayCungCap" name="NgayCungCap" asp-for="NgayCungCap" required />
+    </div>
+
+    <div class="form-group">
+        <label for="HinhThucThanhToan">Hình Thức Thanh Toán</label>
+        <select class="form-control" id="HinhThucThanhToan" name="HinhThucThanhToan" asp-for="HinhThucThanhToan" required>
+            <option value="0">Tiền mặt</option>
+            <option value="1">Chuyển khoản</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="MucThueSuat">Mức Thuế Suất</label>
+        <input type="number" class="form-control" id="MucThueSuat" name="MucThueSuat" asp-for="MucThueSuat" step="0.01" required />
+    </div>
+
+    <div class="form-group">
+        <label for="MaNCC">Mã Nhà Cung Cấp</label>
+        <input type="number" class="form-control" id="MaNCC" name="MaNCC" asp-for="MaNCC" required />
+    </div>
+
+    <!-- Chi tiết đơn hàng -->
+    <h3>Chi Tiết hoá đơn</h3>
+
+    <div id="orderDetails">
+        <div class="order-detail-item">
+            <div class="form-group">
+                <label for="TenNVL">Tên Nguyên Vật Liệu</label>
+                <input type="text" class="form-control" name="OrderDetails[0].TenNVL" required />
+            </div>
+            <div class="form-group">
+                <label for="SoLuong">Số Lượng</label>
+                <input type="number" class="form-control" name="OrderDetails[0].SoLuong" required />
+            </div>
+            <button type="button" class="btn btn-danger remove-detail">Xóa</button>
+        </div>
+    </div>
+
+    <button type="button" id="addDetail" class="btn btn-success">Thêm Chi Tiết</button>
+    
+    <button type="submit" class="btn btn-primary">Thêm</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById("addDetail").addEventListener("click", function() {
+            const orderDetailsDiv = document.getElementById("orderDetails");
+            const newDetailItem = document.createElement("div");
+            newDetailItem.classList.add("order-detail-item");
+            newDetailItem.innerHTML = `
+                <div class="form-group">
+                    <label for="TenNVL">Tên Nguyên Vật Liệu</label>
+                    <input type="text" class="form-control" name="OrderDetails[${orderDetailsDiv.children.length}].TenNVL" required />
+                </div>
+                <div class="form-group">
+                    <label for="SoLuong">Số Lượng</label>
+                    <input type="number" class="form-control" name="OrderDetails[${orderDetailsDiv.children.length}].SoLuong" required />
+                </div>
+                <button type="button" class="btn btn-danger remove-detail">Xóa</button>
+            `;
+            orderDetailsDiv.appendChild(newDetailItem);
+
+            // Xóa chi tiết
+            newDetailItem.querySelector(".remove-detail").addEventListener("click", function() {
+                orderDetailsDiv.removeChild(newDetailItem);
+            });
+        });
+    </script>
+}

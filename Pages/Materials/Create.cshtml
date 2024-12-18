@@ -1,0 +1,38 @@
+@page
+@model KIMPACK.Pages.Materials.CreateModel
+@{
+    ViewData["Title"] = "Thêm Nguyên Vật Liệu";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto rounded border p-4">
+        <h2 class="text-center">Thêm Nguyên Vật Liệu</h2>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label for="TenNVL">Tên nguyên vật liệu</label>
+                <input asp-for="TenNVL" class="form-control" />
+                <span asp-validation-for="TenNVL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="DonViTinh">Đơn vị tính</label>
+                <input asp-for="DonViTinh" class="form-control" />
+                <span asp-validation-for="DonViTinh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="DonGia">Đơn giá</label>
+                <input asp-for="DonGia" class="form-control" type="number" step="0.001" />
+                <span asp-validation-for="DonGia" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm Nguyên Vật Liệu</button>
+            <a href="/Materials/Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert alert-danger mt-3">@Model.Message</div>
+        }
+    </div>
+</div>

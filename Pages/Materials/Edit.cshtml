@@ -1,0 +1,41 @@
+@page
+@model KIMPACK.Pages.Materials.EditModel
+@{
+    ViewData["Title"] = "Sửa thông tin nguyên vật liệu";
+}
+
+<h2 class="text-center mb-3">Sửa thông tin nguyên vật liệu</h2>
+
+<form method="post">
+    <!-- Hiển thị Mã nguyên vật liệu nhưng không cho phép sửa -->
+    <div class="form-group">
+        <label for="MaNVL">Mã nguyên vật liệu</label>
+        <input asp-for="MaNVL" class="form-control" readonly />
+        <span asp-validation-for="MaNVL" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="TenNVL">Tên nguyên vật liệu</label>
+        <input asp-for="TenNVL" class="form-control" />
+        <span asp-validation-for="TenNVL" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="DonViTinh">Đơn vị tính</label>
+        <input asp-for="DonViTinh" class="form-control" />
+        <span asp-validation-for="DonViTinh" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="DonGia">Đơn giá</label>
+        <input asp-for="DonGia" class="form-control" />
+        <span asp-validation-for="DonGia" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info mt-3">@Model.Message</div>
+}

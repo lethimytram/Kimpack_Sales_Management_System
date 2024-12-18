@@ -1,0 +1,27 @@
+@page "{maCC:int}" 
+@model KIMPACK.Pages.MaterialsInvoices.DeleteModel
+@{
+    ViewData["Title"] = "Xóa cung cấp";
+}
+
+<div class="container mt-5">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white text-center">
+            <h3>Xóa hoá đơn mua nguyên vật liệu</h3> <!-- Thay "Khách hàng" thành "Cung cấp" -->
+        </div>
+        <div class="card-body">
+            <p>Bạn có chắc chắn muốn xóa cung cấp với mã <strong>@Model.MaCC</strong> không?</p> <!-- Hiển thị MaCC -->
+            <p>Nếu bạn xóa, mọi dữ liệu liên quan đến cung cấp này sẽ không thể khôi phục.</p> <!-- Cảnh báo khi xóa -->
+        </div>
+        <div class="card-footer text-center">
+            <form method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Xóa
+                </button>
+                <a href="/MaterialsInvoices/Index" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Quay lại
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

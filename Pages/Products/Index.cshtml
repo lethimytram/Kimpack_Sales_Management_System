@@ -1,0 +1,36 @@
+@page
+@model KIMPACK.Pages.Products.Index
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center mb-3"> Danh sách sản phẩm</h2>
+
+<a class="btn btn-primary" asp-page="/Products/Create">Thêm sản phẩm</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> Tên sản phẩm</th>
+            <th> Đơn vị tính </th>
+            <th> Đơn giá </th>
+            <th> Hành động </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.ProductsList)
+        {
+            <tr>
+                <td>@product.MaSP</td>
+                <td>@product.TenSP</td>
+                <td>@product.DonViTinh</td>
+                <td>@product.DonGia</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-primary btn-sm" asp-page="/Products/Edit" asp-route-MaSP="@product.MaSP">Sửa</a> |
+                    <a class="btn btn-primary btn-sm" asp-page="/Products/Delete" asp-route-MaSP="@product.MaSP">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

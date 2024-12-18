@@ -1,0 +1,12 @@
+@page
+@model KIMPACK.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Đăng xuất";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@{
+    await Model.OnGet();
+    Response.Redirect("/Account/Login");
+}

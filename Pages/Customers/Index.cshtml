@@ -1,0 +1,38 @@
+@page
+@model KIMPACK.Pages.Customers.Index
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center mb-3">Danh sách khách hàng</h2>
+
+<a class="btn btn-primary" asp-page="/Customers/Create">Thêm khách hàng</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> Tên </th>
+            <th> Địa chỉ </th>
+            <th> Số điện thoại </th>
+            <th> Số tài khoản </th>
+            <th> Hành động </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model.CustomerList)
+                {
+                    <tr>
+                        <td>@customer.MaKH</td>
+                        <td>@customer.TenKH</td>
+                        <td>@customer.DiaChiKH</td>
+                        <td>@customer.SoDienThoaiKH</td>
+                        <td>@customer.SoTaiKhoanKH</td>
+                        <td style="white-space: nowrap">
+                            <a class="btn btn-primary btn-sm" asp-page="/Customers/Edit" asp-route-MaKH="@customer.MaKH">Sửa</a> |
+                            <a class="btn btn-primary btn-sm" asp-page="/Customers/Delete" asp-route-MaKH="@customer.MaKH">Xoá</a>
+                        </td>
+                    </tr>
+                }
+    </tbody>
+</table>

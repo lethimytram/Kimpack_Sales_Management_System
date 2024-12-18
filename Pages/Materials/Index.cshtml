@@ -1,0 +1,36 @@
+@page
+@model KIMPACK.Pages.Materials.Index
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center mb-3"> Danh sách nguyên vật liệu</h2>
+
+<a class="btn btn-primary" asp-page="/Materials/Create">Thêm nguyên vật liệu</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> Tên nguyên vật liệu</th>
+            <th> Đơn vị tính </th>
+            <th> Đơn giá </th>
+            <th> Hành động </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var material in Model.MaterialsList)
+        {
+            <tr>
+                <td>@material.MaNVL</td>
+                <td>@material.TenNVL</td>
+                <td>@material.DonViTinh</td>
+                <td>@material.DonGia</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-primary btn-sm" asp-page="/Materials/Edit" asp-route-MaNVL="@material.MaNVL">Sửa</a> |
+                    <a class="btn btn-primary btn-sm" asp-page="/Materials/Delete" asp-route-MaNVL="@material.MaNVL">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

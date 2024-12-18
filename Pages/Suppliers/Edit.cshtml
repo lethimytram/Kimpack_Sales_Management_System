@@ -1,0 +1,47 @@
+@page
+@model KIMPACK.Pages.Suppliers.EditModel
+@{
+    ViewData["Title"] = "Sửa nhà cung cấp";
+}
+
+<h2 class="text-center mb-3">Sửa thông tin nhà cung cấp</h2>
+
+<form method="post">
+    <!-- Hiển thị Mã nhà cung cấp nhưng không cho phép sửa -->
+    <div class="form-group">
+        <label for="MaNCC">Mã nhà cung cấp</label>
+        <input asp-for="MaNCC" class="form-control" readonly />
+        <span asp-validation-for="MaNCC" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label for="TenNCC">Tên nhà cung cấp</label>
+        <input asp-for="TenNCC" class="form-control" />
+        <span asp-validation-for="TenNCC" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="DiaChiNCC">Địa chỉ</label>
+        <input asp-for="DiaChiNCC" class="form-control" />
+        <span asp-validation-for="DiaChiNCC" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="SoDienThoaiNCC">Số điện thoại</label>
+        <input asp-for="SoDienThoaiNCC" class="form-control" />
+        <span asp-validation-for="SoDienThoaiNCC" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="SoTaiKhoanNCC">Số tài khoản</label>
+        <input asp-for="SoTaiKhoanNCC" class="form-control" />
+        <span asp-validation-for="SoTaiKhoanNCC" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info mt-3">@Model.Message</div>
+}

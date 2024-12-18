@@ -1,0 +1,52 @@
+@page
+@model KIMPACK.Pages.Products.CreateModel
+@{
+    ViewData["Title"] = "Thêm Sản Phẩm";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto rounded border p-4">
+        <h2 class="text-center">Thêm sản phẩm</h2>
+
+        <form method="post">
+            <!-- Hiển thị các thông báo lỗi nếu có -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Tên sản phẩm -->
+            <div class="form-group">
+                <label for="TenSP">Tên sản phẩm</label>
+                <input asp-for="TenSP" class="form-control" />
+                <span asp-validation-for="TenSP" class="text-danger"></span>
+            </div>
+
+            <!-- Đơn vị tính -->
+            <div class="form-group">
+                <label for="DonViTinh">Đơn vị tính</label>
+                <input asp-for="DonViTinh" class="form-control" />
+                <span asp-validation-for="DonViTinh" class="text-danger"></span>
+            </div>
+
+            <!-- Đơn giá -->
+            <div class="form-group">
+                <label for="DonGia">Đơn giá</label>
+                <input asp-for="DonGia" class="form-control" type="number" step="0.001" />
+                <span asp-validation-for="DonGia" class="text-danger"></span>
+            </div>
+
+            <!-- Nút thêm sản phẩm -->
+            <button type="submit" class="btn btn-primary">Thêm Sản Phẩm</button>
+            <a href="/Products/Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+
+        <!-- Hiển thị thông báo khi có lỗi hoặc thành công -->
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert alert-danger mt-3">@Model.Message</div>
+        }
+    </div>
+</div>
+
+<!-- Kết nối với thư viện JS và Validation của Razor Pages -->
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

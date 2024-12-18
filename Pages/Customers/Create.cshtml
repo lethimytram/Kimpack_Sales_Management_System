@@ -1,0 +1,42 @@
+@page
+@model KIMPACK.Pages.Customers.CreateModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Thêm khách hàng";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto rounded border p-4">
+        <h2 class="text-center">Thêm thông tin khách hàng</h2>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="TenKH">Tên khách hàng</label>
+                <input asp-for="TenKH" class="form-control" />
+                <span asp-validation-for="TenKH" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="DiaChiKH">Địa chỉ</label>
+                <input asp-for="DiaChiKH" class="form-control" />
+                <span asp-validation-for="DiaChiKH" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="SoDienThoaiKH">Số điện thoại</label>
+                <input asp-for="SoDienThoaiKH" class="form-control" />
+                <span asp-validation-for="SoDienThoaiKH" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="SoTaiKhoanKH">Số tài khoản</label>
+                <input asp-for="SoTaiKhoanKH" class="form-control" />
+                <span asp-validation-for="SoTaiKhoanKH" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm</button>
+            <a href="/Customers/Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert alert-info mt-3">@Model.Message</div>
+        }
+    </div>
+</div>

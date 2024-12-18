@@ -1,0 +1,41 @@
+@page
+@model KIMPACK.Pages.Suppliers.CreateModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Thêm nhà cung cấp";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto rounded border p-4">
+        <h2 class="text-center">Thêm nhà cung cấp</h2>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="TenNCC">Tên nhà cung cấp</label>
+                <input asp-for="TenNCC" class="form-control" />
+                <span asp-validation-for="TenNCC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="DiaChiNCC">Địa chỉ</label>
+                <input asp-for="DiaChiNCC" class="form-control" />
+                <span asp-validation-for="DiaChiNCC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="SoDienThoaiNCC">Số điện thoại</label>
+                <input asp-for="SoDienThoaiNCC" class="form-control" />
+                <span asp-validation-for="SoDienThoaiNCC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="SoTaiKhoanNCC">Số tài khoản</label>
+                <input asp-for="SoTaiKhoanNCC" class="form-control" />
+                <span asp-validation-for="SoTaiKhoanNCC" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm nhà cung cấp</button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert alert-info mt-3">@Model.Message</div>
+        }
+    </div>
+</div>
