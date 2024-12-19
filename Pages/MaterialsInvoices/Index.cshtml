@@ -35,9 +35,9 @@
                 <td>@supply.MucThueSuatGTGT</td>
                 <td>@supply.TienThueGTGT?.ToString("N3")</td>
                 <td>@supply.TongTienThanhToan?.ToString("N3")</td>
-                <td>@supply.TenNCC</td>
+                <td>@supply.MaNCC</td>
                 <td style="white-space: nowrap">
-                    <a class="btn btn-primary btn-sm" asp-page="/MaterialsInvoices/ReadDetail" asp-route-MaCC="@supply.MaCC">Chi tiết</a> |
+                    <a class="btn btn-primary btn-sm" asp-page="/MaterialsInvoices/Read" asp-route-MaCC="@supply.MaCC">Chi tiết</a> |
                     <a class="btn btn-primary btn-sm" asp-page="/MaterialsInvoices/Edit" asp-route-MaCC="@supply.MaCC">Sửa</a> |
                     <a class="btn btn-danger btn-sm" asp-page="/MaterialsInvoices/Delete" asp-route-MaCC="@supply.MaCC">Xoá</a>
                 </td>

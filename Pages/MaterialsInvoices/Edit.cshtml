@@ -1,74 +1,173 @@
-@page "{maCC:int}"
+@page
 @model KIMPACK.Pages.MaterialsInvoices.EditModel
-
 @{
-    ViewData["Title"] = "Sửa cung cấp";
+    ViewData["Title"] = "Danh sách hóa đơn mua nguyên vật liệu";
 }
 
-<div class="container mt-5">
-    <div class="card border-primary">
-        <div class="card-header bg-primary text-white text-center">
-            <h3>Sửa hoá đơn mua nguyên vật liệu</h3>
+<h2 class="text-center mb-3">Danh sách hóa đơn mua nguyên vật liệu</h2>
+
+<a class="btn btn-primary" asp-page="/MaterialsInvoices/Create">Thêm hóa đơn</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> ID </th>
+            <th> Mã NVL </th>
+            <th> Số lượng </th>
+            <th> Đơn giá </th>
+            <th> Thành tiền </th>
+            <th> Hành động </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var chiTiet in Model.CungCapChiTiets)
+        {
+            <tr data-maNVL="@chiTiet.MaNVL">
+                <td>@chiTiet.MaCC</td>
+                <td>@chiTiet.MaNVL</td>
+                <td>@chiTiet.SoLuong</td>
+                <td>@chiTiet.DonGia</td>
+                <td>@chiTiet.ThanhTien</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-danger btn-sm" href="javascript:void(0)" onclick="confirmDeleteDetail('@chiTiet.MaNVL')">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="container mt-4">
+    <form id="formEdit" method="post" class="needs-validation" onsubmit="event.preventDefault(); updateInvoice();">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <input type="hidden" id="MaCC" name="MaCC" value="@Model.MaCC">
+                
+                <div class="form-group">
+                    <label for="KyHieuHD">Ký hiệu hóa đơn:</label>
+                    <input type="text" class="form-control" id="KyHieuHD" name="KyHieuHD" 
+                           value="@Model.KyHieuHD" required>
+                    <div class="invalid-feedback">Vui lòng nhập ký hiệu hóa đơn</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="NgayCungCap">Ngày cung cấp:</label>
+                    <input type="date" class="form-control" id="NgayCungCap" name="NgayCungCap" 
+                           value="@Model.NgayCungCap.ToString("yyyy-MM-dd")" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="HinhThucThanhToan">Hình thức thanh toán:</label>
+                    <input type="text" class="form-control" id="HinhThucThanhToan" name="HinhThucThanhToan" 
+                           value="@Model.HinhThucThanhToan" required>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="TongTienNVL">Tổng tiền nguyên vật liệu:</label>
+                    <input type="number" step="0.01" class="form-control" id="TongTienNVL" name="TongTienNVL" 
+                           value="@Model.TongTienNVL" required onchange="calculateTotal()">
+                </div>
+
+                <div class="form-group">
+                    <label for="MucThueSuatGTGT">Mức thuế suất GTGT (%):</label>
+                    <input type="number" step="0.01" class="form-control" id="MucThueSuatGTGT" name="MucThueSuatGTGT" 
+                           value="@Model.MucThueSuatGTGT" required onchange="calculateTotal()">
+                </div>
+
+                <div class="form-group">
+                    <label for="TienThueGTGT">Tiền thuế GTGT:</label>
+                    <input type="number" step="0.01" class="form-control" id="TienThueGTGT" name="TienThueGTGT" 
+                           value="@Model.TienThueGTGT" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="TongTienThanhToan">Tổng tiền thanh toán:</label>
+                    <input type="number" step="0.01" class="form-control" id="TongTienThanhToan" name="TongTienThanhToan" 
+                           value="@Model.TongTienThanhToan" readonly>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="post">
-                <!-- Mã cung cấp -->
-                <div class="form-group">
-                    <label for="MaCC">Mã cung cấp</label>
-                    <input type="text" class="form-control" id="MaCC" name="MaCC" value="@Model.MaCC" readonly />
-                </div>
 
-                <!-- Ngày cung cấp -->
-                <div class="form-group">
-                    <label for="NgayCungCap">Ngày cung cấp</label>
-                    <input type="date" class="form-control" id="NgayCungCap" name="NgayCungCap" value="@Model.NgayCungCap.ToString("yyyy-MM-dd")" required />
-                </div>
-
-                <!-- Hình thức thanh toán -->
-                <div class="form-group">
-                    <label for="HinhThucThanhToan">Hình thức thanh toán</label>
-                    <select class="form-control" id="HinhThucThanhToan" name="HinhThucThanhToan" required>
-                        <option value="1" selected="@(Model.HinhThucThanhToan == "1" ? "selected" : null)">Tiền mặt</option>
-                        <option value="0" selected="@(Model.HinhThucThanhToan == "0" ? "selected" : null)">Chuyển khoản</option>
-                    </select>
-                </div>
-
-                <!-- Mức thuế suất -->
-                <div class="form-group">
-                    <label for="MucThueSuat">Mức thuế suất</label>
-                    <input type="number" class="form-control" id="MucThueSuat" name="MucThueSuat" step="0.001" min="0" max="1" value="@Model.MucThueSuat" required />
-                </div>
-
-                <!-- Mã nhà cung cấp -->
-                <div class="form-group">
-                    <label for="MaNCC">Mã nhà cung cấp</label>
-                    <input type="number" class="form-control" id="MaNCC" name="MaNCC" value="@Model.MaNCC" required />
-                </div>
-
-                <!-- Chi tiết hóa đơn -->
-                <hr />
-                <h4>Chi tiết hóa đơn</h4>
-                <div class="form-group">
-                    <label for="MaNVL">Mã nguyên vật liệu</label>
-                    <!-- Sử dụng readonly để không thể thay đổi Mã nguyên vật liệu -->
-                    <input type="text" class="form-control" id="MaNVL" name="MaNVL" value="@Model.MaNVL" readonly />
-                </div>
-
-                <div class="form-group">
-                    <label for="SoLuong">Số lượng</label>
-                    <input type="number" class="form-control" id="SoLuong" name="SoLuong" value="@Model.SoLuong" step="0.001" min="0" required />
-                </div>
-
-                <!-- Thông báo lỗi nếu có -->
-                @if (Model.Message != null)
-                {
-                    <div class="alert alert-danger mt-3">@Model.Message</div>
-                }
-
-                <!-- Các nút điều hướng -->
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                <a href="/Materials/Index" class="btn btn-secondary">Quay lại</a>
-            </form>
+        <div class="row mt-3">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Cập nhật hóa đơn</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+
+@section Scripts {
+    <script>
+        function calculateTotal() {
+            const tongTienNVL = parseFloat(document.getElementById('TongTienNVL').value) || 0;
+            const mucThue = parseFloat(document.getElementById('MucThueSuatGTGT').value) || 0;
+            
+            const tienThue = tongTienNVL * (mucThue / 100);
+            const tongTien = tongTienNVL + tienThue;
+            
+            document.getElementById('TienThueGTGT').value = tienThue.toFixed(2);
+            document.getElementById('TongTienThanhToan').value = tongTien.toFixed(2);
+        }
+
+        function confirmDeleteDetail(maNVL) {
+            if (confirm('Bạn có chắc chắn muốn xóa chi tiết này?')) {
+                deleteCungCapChiTiet(maNVL);
+            }
+        }
+
+        function deleteCungCapChiTiet(maNVL) {
+            fetch(`/MaterialsInvoices/Edit?handler=DeleteDetail&maNVL=${maNVL}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Remove the row from the table
+                    const row = document.querySelector(`tr[data-maNVL='${maNVL}']`);
+                    if (row) {
+                        row.remove();
+                    }
+                } else {
+                    alert('Không thể xóa chi tiết. Vui lòng thử lại.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+            });
+        }
+
+        function updateInvoice() {
+            const formData = new FormData(document.getElementById('formEdit'));
+
+            fetch('/MaterialsInvoices/Edit', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert(result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+            });
+        }
+
+        // Event listeners for dynamic updates
+        document.getElementById('TongTienNVL').addEventListener('input', calculateTotal);
+        document.getElementById('MucThueSuatGTGT').addEventListener('input', calculateTotal);
+    </script>
+}

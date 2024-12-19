@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uPL3s5q0aF0=",
+  "dgSpecHash": "rq1wAwCn8DA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ThinkPad\\Documents\\KIMPACK\\KIMPACK.csproj",
+  "projectFilePath": "C:\\Users\\ThinkPad\\Desktop\\KIMPACK\\KIMPACK.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ThinkPad\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\ThinkPad\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

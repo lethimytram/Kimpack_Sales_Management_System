@@ -34,7 +34,7 @@ namespace KIMPACK.Pages.MaterialsInvoices
                         MucThueSuatGTGT = reader.GetDecimal(5),
                         TienThueGTGT = reader.IsDBNull(6) ? (decimal?)null : reader.GetDecimal(6),
                         TongTienThanhToan = reader.IsDBNull(7) ? (decimal?)null : reader.GetDecimal(7),
-                        TenNCC = reader.GetString(8)
+                        MaNCC = reader.GetString(8)
                     };
                     SupplyList.Add(supplyInformation);
                 }
@@ -51,11 +51,11 @@ namespace KIMPACK.Pages.MaterialsInvoices
             public string KyHieuHD { get; set; } = "";
             public DateTime NgayCungCap { get; set; }
             public string HinhThucThanhToan { get; set; } = "";
-            public decimal? TongTienNVL { get; set; }
-            public decimal MucThueSuatGTGT { get; set; }
-            public decimal? TienThueGTGT { get; set; }
-            public decimal? TongTienThanhToan { get; set; }
-            public string TenNCC { get; set; } = "";
+            public decimal? TongTienNVL { get; set; } =0;
+            public decimal MucThueSuatGTGT { get; set; } = 0;
+            public decimal? TienThueGTGT { get; set; } = 0;
+            public decimal? TongTienThanhToan { get; set; } = 0;
+            public string MaNCC { get; set; } = "";
         }
     }
 }

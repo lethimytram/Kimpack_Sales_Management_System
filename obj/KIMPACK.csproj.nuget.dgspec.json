@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ThinkPad\\Documents\\KIMPACK\\KIMPACK.csproj": {}
+    "C:\\Users\\ThinkPad\\Desktop\\KIMPACK\\KIMPACK.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ThinkPad\\Documents\\KIMPACK\\KIMPACK.csproj": {
+    "C:\\Users\\ThinkPad\\Desktop\\KIMPACK\\KIMPACK.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ThinkPad\\Documents\\KIMPACK\\KIMPACK.csproj",
+        "projectUniqueName": "C:\\Users\\ThinkPad\\Desktop\\KIMPACK\\KIMPACK.csproj",
         "projectName": "KIMPACK",
-        "projectPath": "C:\\Users\\ThinkPad\\Documents\\KIMPACK\\KIMPACK.csproj",
+        "projectPath": "C:\\Users\\ThinkPad\\Desktop\\KIMPACK\\KIMPACK.csproj",
         "packagesPath": "C:\\Users\\ThinkPad\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ThinkPad\\Documents\\KIMPACK\\obj\\",
+        "outputPath": "C:\\Users\\ThinkPad\\Desktop\\KIMPACK\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ThinkPad\\AppData\\Roaming\\NuGet\\NuGet.Config"

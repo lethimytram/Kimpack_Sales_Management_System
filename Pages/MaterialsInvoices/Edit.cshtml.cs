@@ -1,20 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace KIMPACK.Pages.MaterialsInvoices
 {
-    public class EditModel(IConfiguration configuration) : PageModel
+    public class EditModel : PageModel
     {
-        private readonly IConfiguration _configuration = configuration;
-
         [BindProperty]
         public int MaCC { get; set; }
+
+        [BindProperty]
+        public required string KyHieuHD { get; set; }
 
         [BindProperty]
         public DateTime NgayCungCap { get; set; }
@@ -23,203 +24,279 @@ namespace KIMPACK.Pages.MaterialsInvoices
         public required string HinhThucThanhToan { get; set; }
 
         [BindProperty]
-        public decimal MucThueSuat { get; set; }
+        public decimal? TongTienNVL { get; set; }
 
         [BindProperty]
-        public int MaNCC { get; set; }
+        public decimal MucThueSuatGTGT { get; set; }
 
         [BindProperty]
-        public required string Message { get; set; }
-
-        // Chi tiết cung cấp
-        [BindProperty]
-        public int MaNVL { get; set; }
+        public decimal? TienThueGTGT { get; set; }
 
         [BindProperty]
-        public decimal SoLuong { get; set; }
+        public decimal? TongTienThanhToan { get; set; }
 
-        public required List<ChiTietCungCap> CungCapChiTiets { get; set; }
+        [BindProperty]
+        public required int MaNCC { get; set; }
 
-        [Obsolete]
-        public async Task<IActionResult> OnGetAsync(int maCC)
+        [BindProperty]
+        public required List<ChiTietCungCap> CungCapChiTiets { get; set; } = new List<ChiTietCungCap>();
+
+        public List<Supply> SupplyList { get; set; } = new List<Supply>();
+
+        private readonly IConfiguration _configuration;
+
+        public EditModel(IConfiguration configuration)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            _configuration = configuration;
+        }
 
-            // Lấy thông tin từ bảng CUNG_CAP
-            using (var connection = new SqlConnection(connectionString))
+        public async Task<IActionResult> OnGetAsync(int? maCC)
+        {
+            if (!maCC.HasValue)
             {
-                string query = "SELECT * FROM CUNG_CAP WHERE MaCC = @MaCC";
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@MaCC", maCC);
-
-                await connection.OpenAsync();
-                var reader = await command.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
-                {
-                    MaCC = reader.GetInt32(reader.GetOrdinal("MaCC"));
-                    NgayCungCap = reader.GetDateTime(reader.GetOrdinal("NgayCungCap"));
-                    HinhThucThanhToan = reader.GetString(reader.GetOrdinal("HinhThucThanhToan"));
-                    MucThueSuat = reader.GetDecimal(reader.GetOrdinal("MucThueSuatGTGT"));
-                    MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC"));
-                }
+                return RedirectToPage("/MaterialsInvoices/Index");
             }
 
-            // Lấy thông tin chi tiết cung cấp từ bảng CUNG_CAP_CHI_TIET
-            using (var connection = new SqlConnection(connectionString))
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
             {
-                string chiTietQuery = "SELECT * FROM CUNG_CAP_CHI_TIET WHERE MaCC = @MaCC";
-                var command = new SqlCommand(chiTietQuery, connection);
-                command.Parameters.AddWithValue("@MaCC", maCC);
+                return BadRequest("Connection string 'DefaultConnection' not found.");
+            }
 
-                await connection.OpenAsync();
-                var reader = await command.ExecuteReaderAsync();
-
-                List<ChiTietCungCap> cungCapChiTiets = new List<ChiTietCungCap>();
-                while (await reader.ReadAsync())
-                {
-                    cungCapChiTiets.Add(new ChiTietCungCap
-                    {
-                        MaNVL = reader.GetInt32(reader.GetOrdinal("MaNVL")), // Đảm bảo MaNVL tồn tại trong bảng CUNG_CAP_CHI_TIET
-                        SoLuong = reader.GetDecimal(reader.GetOrdinal("SoLuong")),
-                        ThanhTien = reader.GetDecimal(reader.GetOrdinal("ThanhTien"))
-                    });
-                }
-
-                // Gán danh sách chi tiết cung cấp vào model để sử dụng trong giao diện Razor
-                CungCapChiTiets = cungCapChiTiets;
+            try
+            {
+                await LoadInvoiceDataAsync(maCC.Value, connectionString);
+                await LoadCungCapChiTietsAsync(maCC.Value, connectionString);
+                await LoadSupplyListAsync(maCC.Value, connectionString);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
             }
 
             return Page();
         }
 
-        [Obsolete]
+        private async Task LoadSupplyListAsync(int maCC, string connectionString)
+        {
+            SupplyList.Clear();
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var query = @"
+                    SELECT MaCC, KyHieuHD, NgayCungCap, HinhThucThanhToan, 
+                        TongTienNVL, MucThueSuatGTGT, TienThueGTGT, 
+                        TongTienThanhToan, MaNCC
+                    FROM dbo.CUNG_CAP
+                    WHERE MaCC = @MaCC";
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@MaCC", maCC);
+
+                await connection.OpenAsync();
+                var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    SupplyList.Add(new Supply
+                    {
+                        MaCC = reader.GetInt32(reader.GetOrdinal("MaCC")),
+                        KyHieuHD = reader.GetString(reader.GetOrdinal("KyHieuHD")),
+                        NgayCungCap = reader.GetDateTime(reader.GetOrdinal("NgayCungCap")),
+                        HinhThucThanhToan = reader.GetString(reader.GetOrdinal("HinhThucThanhToan")),
+                        TongTienNVL = reader.IsDBNull(reader.GetOrdinal("TongTienNVL")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("TongTienNVL")),
+                        MucThueSuatGTGT = reader.GetDecimal(reader.GetOrdinal("MucThueSuatGTGT")),
+                        TienThueGTGT = reader.IsDBNull(reader.GetOrdinal("TienThueGTGT")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("TienThueGTGT")),
+                        TongTienThanhToan = reader.IsDBNull(reader.GetOrdinal("TongTienThanhToan")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("TongTienThanhToan")),
+                        MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC"))
+                    });
+                }
+            }
+        }
+
+
+        private async Task LoadInvoiceDataAsync(int maCC, string connectionString)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var query = @"
+                    SELECT MaCC, KyHieuHD, NgayCungCap, HinhThucThanhToan, TongTienNVL, 
+                           MucThueSuatGTGT, TienThueGTGT, TongTienThanhToan, MaNCC
+                    FROM dbo.CUNG_CAP
+                    WHERE MaCC = @MaCC";
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@MaCC", maCC);
+
+                await connection.OpenAsync();
+                var reader = await command.ExecuteReaderAsync();
+
+                if (await reader.ReadAsync())
+                {
+                    MaCC = reader.GetInt32(reader.GetOrdinal("MaCC"));
+                    KyHieuHD = reader.GetString(reader.GetOrdinal("KyHieuHD"));
+                    NgayCungCap = reader.GetDateTime(reader.GetOrdinal("NgayCungCap"));
+                    HinhThucThanhToan = reader.GetString(reader.GetOrdinal("HinhThucThanhToan"));
+                    TongTienNVL = reader.IsDBNull(reader.GetOrdinal("TongTienNVL")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("TongTienNVL"));
+                    MucThueSuatGTGT = reader.GetDecimal(reader.GetOrdinal("MucThueSuatGTGT"));
+                    TienThueGTGT = reader.IsDBNull(reader.GetOrdinal("TienThueGTGT")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("TienThueGTGT"));
+                    TongTienThanhToan = reader.IsDBNull(reader.GetOrdinal("TongTienThanhToan")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("TongTienThanhToan"));
+                    MaNCC = reader.GetInt32(reader.GetOrdinal("MaNCC"));
+                }
+            }
+        }
+
+        private async Task LoadCungCapChiTietsAsync(int maCC, string connectionString)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var query = @"
+                    SELECT CCCT.MaNVL, CCCT.SoLuong, CCCT.ThanhTien, N.DonGia, CCCT.MaCC
+                    FROM dbo.CUNG_CAP_CHI_TIET CCCT
+                    INNER JOIN dbo.NGUYEN_VAT_LIEU N ON CCCT.MaNVL = N.MaNVL
+                    WHERE CCCT.MaCC = @MaCC";
+
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@MaCC", maCC);
+
+                await connection.OpenAsync();
+                var reader = await command.ExecuteReaderAsync();
+
+                CungCapChiTiets.Clear();
+                while (await reader.ReadAsync())
+                {
+                    CungCapChiTiets.Add(new ChiTietCungCap
+                    {
+                        MaCC = reader.GetInt32(reader.GetOrdinal("MaCC")),
+                        MaNVL = reader.GetInt32(reader.GetOrdinal("MaNVL")),
+                        SoLuong = reader.GetDecimal(reader.GetOrdinal("SoLuong")),
+                        ThanhTien = reader.GetDecimal(reader.GetOrdinal("ThanhTien")),
+                        DonGia = reader.GetDecimal(reader.GetOrdinal("DonGia"))
+                    });
+                }
+            }
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                return Page(); // Nếu dữ liệu không hợp lệ, quay lại trang nhập
+                return new JsonResult(new { success = false, message = "Dữ liệu không hợp lệ!" });
             }
 
-            bool cungCapUpdateResult = await UpdateCungCapAsync(MaCC, NgayCungCap, HinhThucThanhToan, MucThueSuat, MaNCC);
-
-            bool chiTietUpdateResult = false;
-
-            // Kiểm tra xem có cung cấp chi tiết nào được sửa không
-            if (MaNVL > 0 && SoLuong > 0)
+            if (TongTienNVL.HasValue && MucThueSuatGTGT > 0)
             {
-                chiTietUpdateResult = await UpdateCungCapChiTietAsync(MaCC, MaNVL, SoLuong);
-            }
+                TienThueGTGT = TongTienNVL.Value * (MucThueSuatGTGT / 100);
+                TongTienThanhToan = TongTienNVL.Value + TienThueGTGT;
 
-            if (cungCapUpdateResult && chiTietUpdateResult)
-            {
-                // Chuyển hướng về trang danh sách sau khi sửa thành công
-                return RedirectToPage("/MaterialsInvoices/Index");
+                if (TienThueGTGT < 0 || TongTienThanhToan < 0)
+                {
+                    return new JsonResult(new { success = false, message = "Giá trị tiền hoặc thuế không hợp lệ!" });
+                }
             }
             else
             {
-                // Nếu thất bại, hiển thị thông báo lỗi và quay lại trang nhập
-                Message = "Cập nhật cung cấp thất bại. Vui lòng kiểm tra lại dữ liệu!";
-                return Page();
+                return new JsonResult(new { success = false, message = "Vui lòng nhập đầy đủ thông tin về tiền nguyên vật liệu và thuế suất!" });
+            }
+
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return new JsonResult(new { success = false, message = "Không tìm thấy kết nối cơ sở dữ liệu!" });
+            }
+
+            var success = await UpdateInvoiceAsync(connectionString);
+            return new JsonResult(new { success = success, message = success ? "Cập nhật thành công!" : "Cập nhật thất bại! Vui lòng kiểm tra lại dữ liệu." });
+        }
+
+        private async Task<bool> UpdateInvoiceAsync(string connectionString)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand("sp_suaCungCap", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@MaCC", MaCC);
+                        command.Parameters.AddWithValue("@NgayCungCap", NgayCungCap);
+                        command.Parameters.AddWithValue("@HinhThucThanhToan", HinhThucThanhToan);
+                        command.Parameters.AddWithValue("@MaNCC", MaNCC);
+                        command.Parameters.AddWithValue("@TongTienNVL", TongTienNVL.HasValue ? (object)TongTienNVL.Value : DBNull.Value);
+                        command.Parameters.AddWithValue("@MucThueSuatGTGT", MucThueSuatGTGT);
+                        command.Parameters.AddWithValue("@TienThueGTGT", TienThueGTGT.HasValue ? (object)TienThueGTGT.Value : DBNull.Value);
+                        command.Parameters.AddWithValue("@TongTienThanhToan", TongTienThanhToan.HasValue ? (object)TongTienThanhToan.Value : DBNull.Value);
+
+                        SqlParameter outputParam = new SqlParameter("@ret", SqlDbType.Bit) { Direction = ParameterDirection.Output };
+                        command.Parameters.Add(outputParam);
+
+                        await command.ExecuteNonQueryAsync();
+                        return (bool)command.Parameters["@ret"].Value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
             }
         }
 
-        [Obsolete]
-        private async Task<bool> UpdateCungCapAsync(int maCC, DateTime ngayCungCap, string hinhThucThanhToan, decimal mucThueSuat, int maNCC)
+        public async Task<IActionResult> OnPostDeleteDetailAsync(int maNVL)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-
-            using (var connection = new SqlConnection(connectionString))
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
             {
-                try
+                return new JsonResult(new { success = false, message = "Không tìm thấy kết nối cơ sở dữ liệu!" });
+            }
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
-
-                    using (var command = new SqlCommand("spSuaCungCap", connection))
+                    using (var command = new SqlCommand("sp_xoaCungCapChiTiet", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@MaNVL", maNVL);
+                        command.Parameters.AddWithValue("@MaCC", MaCC);
 
-                        // Thêm tham số cho thủ tục
-                        command.Parameters.AddWithValue("@maCC", maCC);
-                        command.Parameters.AddWithValue("@ngayCungCap", ngayCungCap);
-                        command.Parameters.AddWithValue("@hinhThucThanhToan", hinhThucThanhToan);
-                        command.Parameters.AddWithValue("@mucThueSuat", mucThueSuat);
-                        command.Parameters.AddWithValue("@maNCC", maNCC);
+                        SqlParameter outputParam = new SqlParameter("@ret", SqlDbType.Bit) { Direction = ParameterDirection.Output };
+                        command.Parameters.Add(outputParam);
 
-                        // Output parameter cho kết quả
-                        SqlParameter ketQuaParam = new SqlParameter("@ketQua", SqlDbType.Bit)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(ketQuaParam);
-
-                        // Thực thi thủ tục
                         await command.ExecuteNonQueryAsync();
-
-                        // Lấy kết quả từ tham số output
-                        return (bool)command.Parameters["@ketQua"].Value;
+                        var success = (bool)command.Parameters["@ret"].Value;
+                        return new JsonResult(new { success = success });
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Lỗi: {ex.Message}");
-                    return false;
                 }
             }
-        }
-
-        [Obsolete]
-        private async Task<bool> UpdateCungCapChiTietAsync(int maCC, int maNVL, decimal soLuong)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-
-            using (var connection = new SqlConnection(connectionString))
+            catch (Exception ex)
             {
-                try
-                {
-                    await connection.OpenAsync();
-
-                    using (var command = new SqlCommand("spsuaCungCapChiTiet", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        // Thêm tham số cho thủ tục
-                        command.Parameters.AddWithValue("@maCC", maCC);
-                        command.Parameters.AddWithValue("@maNVL", maNVL);
-                        command.Parameters.AddWithValue("@soLuong", soLuong);
-
-                        // Output parameter cho kết quả
-                        SqlParameter ketQuaParam = new SqlParameter("@ketQua", SqlDbType.Bit)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(ketQuaParam);
-
-                        // Thực thi thủ tục
-                        await command.ExecuteNonQueryAsync();
-
-                        // Lấy kết quả từ tham số output
-                        return (bool)command.Parameters["@ketQua"].Value;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Lỗi: {ex.Message}");
-                    return false;
-                }
+                Console.WriteLine($"Error: {ex.Message}");
+                return new JsonResult(new { success = false });
             }
         }
     }
 
     public class ChiTietCungCap
     {
+        public int MaCC { get; set; }
         public int MaNVL { get; set; }
         public decimal SoLuong { get; set; }
         public decimal ThanhTien { get; set; }
+        public decimal DonGia { get; set; }
     }
+
+    public class Supply
+{
+    public int MaCC { get; set; } 
+    public required string KyHieuHD { get; set; }
+    public DateTime NgayCungCap { get; set; }
+    public required string HinhThucThanhToan { get; set; }
+    public decimal? TongTienNVL { get; set; }
+    public decimal MucThueSuatGTGT { get; set; }
+    public decimal? TienThueGTGT { get; set; }
+    public decimal? TongTienThanhToan { get; set; }
+    public int MaNCC { get; set; }
+}
 }
