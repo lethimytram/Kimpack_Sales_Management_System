@@ -40,5 +40,6 @@
      + Sản phẩm
      + Nguyên vật liệu
 2. Chạy con
-   ```docker run -p 5000:80 yourprojectname
+   ```bash
+   docker run -p 5000:80 KIMPACK
 
