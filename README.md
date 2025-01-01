@@ -36,7 +36,9 @@
    ```bash
    git clone https://github.com/username/repository.git
    cd repository
-
      + Mua nguyên vật liệu 
      + Sản phẩm
-     + Nguyên vật liệu  
+     + Nguyên vật liệu
+2. Chạy con
+   ```docker run -p 5000:80 yourprojectname
+
