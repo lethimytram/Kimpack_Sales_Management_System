@@ -1,3 +1,5 @@
+## Giới thiệu về dự án KIMPACK
+
 ### Mục đích của Dự án
 
 - Ôn lại kiến thức **HTML**, **CSS**, **Bootstrap**.  
@@ -24,6 +26,17 @@
      + Nhà cung cấp  
      + Khách hàng  
      + Bán hàng
+## Cách chạy dự án bằng Docker
+
+### Yêu cầu
+- Docker và Docker Compose đã được cài đặt trên máy.
+
+### Các bước thực hiện
+1. Clone repository:
+   ```bash
+   git clone https://github.com/username/repository.git
+   cd repository
+
      + Mua nguyên vật liệu 
      + Sản phẩm
      + Nguyên vật liệu  
