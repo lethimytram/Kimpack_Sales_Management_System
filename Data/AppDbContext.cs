@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using KIMPACK.Models;  // Đảm bảo import đúng namespace cho AppUser
+using KIMPACK.Models;  
 
 namespace KIMPACK.Data
 {
